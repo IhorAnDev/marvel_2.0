@@ -30,7 +30,9 @@ class MarvelService {
         }
         return {
             name: char.name,
-            description: char.description,
+            description: char.description ?
+                `${char.description.slice(0, 210)}...` :
+                "There is no description about characters",
             thumbnail: thumbnailPath,
             homepage: char.urls[0].url,
             wiki: char.urls[1].url
