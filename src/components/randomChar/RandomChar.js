@@ -38,11 +38,14 @@ class RandomChar extends Component {
     render() {
         const {char, loading, error} = this.state;
         const errorMessage = error ? <ErrorMessage/> : null;
-        const load = loading ? <Spinner/> : <View char={char}/>;
+        const spinner = loading ? <Spinner/> : null;
+        const content = !(loading || error) ? <View char={char}/> : null;
 
         return (
             <div className="randomchar">
-                {errorMessage || load}
+                {errorMessage}
+                {spinner}
+                {content}
                 <div className="randomchar__static">
                     <p className="randomchar__title">
                         Random character for today!<br/>
