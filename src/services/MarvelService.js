@@ -29,13 +29,14 @@ class MarvelService {
             thumbnailPath = "https://assets.entrepreneur.com/content/3x2/2000/20160701113917-Marvel.jpeg";
         }
         return {
+            id: char.id,
             name: char.name,
             description: char.description ?
                 `${char.description.slice(0, 210)}...` :
                 "There is no description about characters",
             thumbnail: thumbnailPath,
             homepage: char.urls[0].url,
-            wiki: char.urls[1].url
+            wiki: char.urls[1].url,
         }
     }
 }
