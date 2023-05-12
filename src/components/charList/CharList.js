@@ -47,7 +47,9 @@ class CharList extends Component {
 
             const name = char.name.length > 30 ? `${char.name.slice(0, 29)}...` : char.name
             return (
-                <li className="char__item" key={char.id}>
+                <li className="char__item" key={char.id} onClick={() => {
+                    this.props.onCharSelected(char.id)
+                }}>
                     <img src={char.thumbnail} alt={char.name} style={imgStyle}/>
                     <div className="char__name">{name}</div>
                 </li>

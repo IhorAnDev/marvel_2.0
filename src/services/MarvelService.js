@@ -1,6 +1,11 @@
 class MarvelService {
 
-    _API_KEY = 'apikey=362d708dfd6a43d3cd437026201c4770';
+    // IhorAnDev
+    // _API_KEY = 'apikey=362d708dfd6a43d3cd437026201c4770';
+
+    //DevelopPaPA
+    _API_KEY = 'apikey=28582228fcafe30c8acf2c7eb6b3ac77';
+
     _URL = 'https://gateway.marvel.com:443/v1/public/';
 
     getResource = async (url) => {
@@ -37,6 +42,7 @@ class MarvelService {
             thumbnail: thumbnailPath,
             homepage: char.urls[0].url,
             wiki: char.urls[1].url,
+            comicsList: char.comics.items
         }
     }
 }
