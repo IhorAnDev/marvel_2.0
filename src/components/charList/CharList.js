@@ -3,6 +3,7 @@ import {Component} from "react";
 import MarvelService from "../../services/MarvelService";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 import Spinner from "../spiner/Spinner";
+import PropTypes from "prop-types";
 
 class CharList extends Component {
 
@@ -55,8 +56,20 @@ class CharList extends Component {
             .catch(this.onError)
     }
 
+    refItems = [];
+
+    setRef = ref => {
+        this.refItems.push(ref);
+    }
+
+    onItemFocus = (id) => {
+        this.refItems.forEach(item => item.classList.remove('char__item_selected'));
+        this.refItems[id].classList.add('char__item_selected');
+        this.refItems[id].focus();
+    }
+
     renderChars(arr) {
-        const items = arr.map((char) => {
+        const items = arr.map((char, i) => {
             let imgStyle = {objectFit: 'cover'};
             if (char.thumbnail === "https://assets.entrepreneur.com/content/3x2/2000/20160701113917-Marvel.jpeg") {
                 imgStyle = {objectFit: 'unset'};
@@ -64,9 +77,20 @@ class CharList extends Component {
 
             const name = char.name.length > 30 ? `${char.name.slice(0, 29)}...` : char.name
             return (
-                <li className="char__item" key={char.id} onClick={() => {
-                    this.props.onCharSelected(char.id)
-                }}>
+                <li className="char__item"
+                    key={char.id}
+                    tabIndex={0}
+                    ref={this.setRef}
+                    onClick={() => {
+                        this.props.onCharSelected(char.id)
+                        this.onItemFocus(i);
+                    }}
+                    onKeyPress={(e) => {
+                        if (e.key === ' ' || e.key === "Enter") {
+                            this.props.onCharSelected(char.id);
+                            this.onItemFocus(i);
+                        }
+                    }}>
                     <img src={char.thumbnail} alt={char.name} style={imgStyle}/>
                     <div className="char__name">{name}</div>
                 </li>
@@ -103,6 +127,10 @@ class CharList extends Component {
             </div>
         )
     }
+}
+
+CharList.propTypes = {
+    onCharSelected: PropTypes.func
 }
 
 export default CharList;
