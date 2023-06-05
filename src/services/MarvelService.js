@@ -2,9 +2,11 @@ class MarvelService {
 
     // IhorAnDev
     // _API_KEY = 'apikey=362d708dfd6a43d3cd437026201c4770';
+    //Ivan
+    _API_KEY = 'apikey=c5d6fc8b83116d92ed468ce36bac6c62';
 
     //DevelopPaPA
-    _API_KEY = 'apikey=28582228fcafe30c8acf2c7eb6b3ac77';
+    // _API_KEY = 'apikey=28582228fcafe30c8acf2c7eb6b3ac77';
 
     _URL = 'https://gateway.marvel.com:443/v1/public/';
 
@@ -22,7 +24,7 @@ class MarvelService {
 
     getAllCharacters = async (offset = this._baseOffset) => {
         const res = await this.getResource(`${this._URL}characters?limit=9&offset=${offset}&${this._API_KEY}`);
-        return res.data.results.map(this._transformCharacter)
+        return res.data.results.map(this._transformCharacter);
     };
 
     getCharactersById = async (id) => {
