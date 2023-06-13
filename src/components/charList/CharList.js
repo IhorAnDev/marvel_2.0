@@ -1,31 +1,26 @@
 import './charList.scss';
-import {Component, useEffect, useRef, useState} from "react";
-import MarvelService from "../../services/MarvelService";
+import {useEffect, useRef, useState} from "react";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 import Spinner from "../spiner/Spinner";
 import PropTypes from "prop-types";
+import useMarvelService from "../../services/MarvelService";
 
 const CharList = (props) => {
 
 
     const [listChar, setListChar] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
     const [newItemsLoading, setNewItemsLoading] = useState(false);
     const [offset, setOffset] = useState(200);
     const [charEnded, setCharEnded] = useState(false);
 
 
-    const marvelService = new MarvelService();
+    const {loading, error, getAllCharacters} = useMarvelService();
 
 
     useEffect(() => {
-        loadingChar();
+        loadingChar(offset, true);
     }, [])
 
-    const onCharListLoading = () => {
-        setNewItemsLoading(true);
-    }
 
     const onCharsLoaded = (newListChar) => {
         let ended = false;
@@ -34,23 +29,15 @@ const CharList = (props) => {
         }
 
         setListChar(listChar => [...listChar, ...newListChar]);
-        setLoading(false);
         setNewItemsLoading(false);
         setOffset(offset => offset + 9);
         setCharEnded(ended);
     }
 
-    const onError = () => {
-
-        setError(true);
-        setLoading(false);
-    }
-
-    const loadingChar = (offset) => {
-        onCharListLoading();
-        marvelService.getAllCharacters(offset)
+    const loadingChar = (offset, initial) => {
+        initial ? setNewItemsLoading(false) : setNewItemsLoading(true);
+        getAllCharacters(offset)
             .then(onCharsLoaded)
-            .catch(onError)
     }
 
     const refItems = useRef([]);
@@ -69,7 +56,7 @@ const CharList = (props) => {
                 imgStyle = {objectFit: 'unset'};
             }
 
-            const name = char.name.length > 30 ? `${char.name.slice(0, 29)}...` : char.name
+            const name = char.name.length > 30 ? `${char.name.slice(0, 29)}...` : char.name;
             return (
                 <li className="char__item"
                     key={char.id}
@@ -101,14 +88,14 @@ const CharList = (props) => {
     const items = renderChars(listChar);
 
     const errorMessage = error ? <ErrorMessage/> : null;
-    const spinner = loading ? <Spinner/> : null;
-    const content = !(loading || error) ? items : null;
+    const spinner = loading && !newItemsLoading ? <Spinner/> : null;
+
 
     return (
         <div className="char__list">
             {errorMessage}
             {spinner}
-            {content}
+            {items}
             <button className="button button__main button__long"
                     disabled={newItemsLoading}
                     style={{'display': charEnded ? 'none' : 'block'}}

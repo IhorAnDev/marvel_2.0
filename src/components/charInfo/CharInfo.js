@@ -1,37 +1,26 @@
 import './charInfo.scss';
-import {Component, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import MarvelService from "../../services/MarvelService";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 import Spinner from "../spiner/Spinner";
 import Skeleton from "../skeleton/Skeleton";
 import PropTypes from "prop-types";
-import {eventWrapper} from "@testing-library/user-event/dist/utils";
+import useMarvelService from "../../services/MarvelService";
 
 const CharInfo = (props) => {
 
 
     const [char, setChar] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(false);
 
-    const marvelService = new MarvelService();
+
+    const {loading, error, getCharactersById, clearError} = useMarvelService();
 
     useEffect(() => {
         updateInfoChar();
     }, [props.charId])
 
 
-    const onError = (error) => {
-        setError(error);
-        setLoading(false);
-    }
-
-    const onCharLoading = () => {
-        setLoading(loading => loading);
-    }
-
     const onCharLoaded = (char) => {
-        setLoading(false);
         setChar(char);
     }
 
@@ -41,10 +30,9 @@ const CharInfo = (props) => {
         if (!charId) {
             return;
         }
-        onCharLoading();
-        marvelService.getCharactersById(charId)
-            .then(onCharLoaded)
-            .catch(onError)
+        clearError();
+        getCharactersById(charId)
+            .then(onCharLoaded);
     }
 
 

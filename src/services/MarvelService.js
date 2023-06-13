@@ -1,37 +1,29 @@
-class MarvelService {
+import useHttp from "../hooks/http.hook";
 
+const useMarvelService = () => {
+    const {loading, request, error, clearError} = useHttp();
     // IhorAnDev
     // _API_KEY = 'apikey=362d708dfd6a43d3cd437026201c4770';
     //Ivan
-    _API_KEY = 'apikey=c5d6fc8b83116d92ed468ce36bac6c62';
+    const _API_KEY = 'apikey=c5d6fc8b83116d92ed468ce36bac6c62';
 
     //DevelopPaPA
     // _API_KEY = 'apikey=28582228fcafe30c8acf2c7eb6b3ac77';
 
-    _URL = 'https://gateway.marvel.com:443/v1/public/';
+    const _URL = 'https://gateway.marvel.com:443/v1/public/';
 
-    _baseOffset = 200;
+    const _baseOffset = 200;
 
-    getResource = async (url) => {
-        let result = await fetch(url);
-
-        if (!result.ok) {
-            throw new Error(`Couldn't fetch ${url}, status: ${result.status}`)
-        }
-
-        return await result.json();
+    const getAllCharacters = async (offset = _baseOffset) => {
+        const res = await request(`${_URL}characters?limit=9&offset=${offset}&${_API_KEY}`);
+        return res.data.results.map(_transformCharacter);
     };
 
-    getAllCharacters = async (offset = this._baseOffset) => {
-        const res = await this.getResource(`${this._URL}characters?limit=9&offset=${offset}&${this._API_KEY}`);
-        return res.data.results.map(this._transformCharacter);
+    const getCharactersById = async (id) => {
+        const res = await request(`${_URL}characters/${id}?${_API_KEY}`);
+        return _transformCharacter(res.data.results[0]);
     };
-
-    getCharactersById = async (id) => {
-        const res = await this.getResource(`${this._URL}characters/${id}?${this._API_KEY}`);
-        return this._transformCharacter(res.data.results[0]);
-    };
-    _transformCharacter = (char) => {
+    const _transformCharacter = (char) => {
         let thumbnailPath = char.thumbnail.path + '.' + char.thumbnail.extension;
 
         if (thumbnailPath.includes("image_not_available")) {
@@ -49,6 +41,32 @@ class MarvelService {
             comicsList: char.comics.items
         }
     };
+
+    const getAllComics = async (offset = _baseOffset) => {
+        const result = await request(`${_URL}comics?limit=8&offset=${offset}&${_API_KEY}`);
+        return result.data.results.map(_transformComics);
+    }
+
+    const _transformComics = (comics) => {
+        let thumbnailPath = comics.thumbnail.path + '.' + comics.thumbnail.extension;
+
+        if (thumbnailPath.includes("image_not_available")) {
+            thumbnailPath = "https://assets.entrepreneur.com/content/3x2/2000/20160701113917-Marvel.jpeg";
+        }
+
+        return {
+            id: comics.id,
+            title: comics.title,
+            description: comics.description ?
+                `${comics.description.slice(0, 210)}...` :
+                "There is no description about characters",
+            url: comics.urls[0].url,
+            thumbnail: thumbnailPath,
+            price: comics.prices[0].price
+        }
+    }
+
+    return {loading, error, getCharactersById, getAllCharacters, clearError, getAllComics};
 }
 
-export default MarvelService;
+export default useMarvelService;
