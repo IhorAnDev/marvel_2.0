@@ -5,6 +5,8 @@ import {useEffect, useState} from "react";
 import useMarvelService from "../../services/MarvelService";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 import Spinner from "../spiner/Spinner";
+import {Link} from "react-router-dom";
+import AppBanner from "../appBanner/AppBanner";
 
 const ComicsList = () => {
 
@@ -46,14 +48,14 @@ const ComicsList = () => {
             const price = comics.price === 0 ? 'NOT AVAILABLE' : `${comics.price}$`;
             return (
                 <li className="comics__item"
-                    key={comics.id}
+                    key={i}
                     tabIndex={0}
                 >
-                    <a href={comics.url}>
+                    <Link to={`/comics/${comics.id}`}>
                         <img src={comics.thumbnail} alt={comics.title} className="comics__item-img"/>
                         <div className="comics__item-name">{title}</div>
                         <div className="comics__item-price">{price}</div>
-                    </a>
+                    </Link>
                 </li>
             )
         });
