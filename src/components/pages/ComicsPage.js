@@ -10,7 +10,7 @@ const ComicsPage = () => {
             <AppBanner/>
             <Routes>
                 <Route>
-                    <Route path=":id" element={<SingleComicPage/>}/>
+                    <Route path="/:comicId" element={<SingleComicPage/>}/>
                     <Route path="/" element={<ComicsList/>}/>
                 </Route>
             </Routes>
