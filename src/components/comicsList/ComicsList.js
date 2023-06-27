@@ -8,6 +8,26 @@ import Spinner from "../spiner/Spinner";
 import {Link} from "react-router-dom";
 import AppBanner from "../appBanner/AppBanner";
 
+
+const setContent = (process, Component, newItemLoading) => {
+    switch (process) {
+        case 'waiting':
+            return <Spinner/>;
+            break;
+        case 'loading':
+            return newItemLoading ? <Component/> : <Spinner/>;
+            break;
+        case 'confirmed':
+            return <Component/>;
+            break;
+        case 'error':
+            return <ErrorMessage/>;
+            break;
+        default:
+            throw new Error('Unexpected process state');
+    }
+}
+
 const ComicsList = () => {
 
     const [listComics, setListComics] = useState([]);
@@ -15,7 +35,7 @@ const ComicsList = () => {
     const [offset, setOffset] = useState(200);
     const [comicsEnded, setComicsEnded] = useState(false);
 
-    const {loading, error, getAllComics} = useMarvelService();
+    const {getAllComics, process, setProcess} = useMarvelService();
 
     useEffect(() => {
         loadingComics(offset, true)
@@ -35,7 +55,8 @@ const ComicsList = () => {
     const loadingComics = (offset, initial) => {
         initial ? setNewItemsLoading(false) : setNewItemsLoading(true);
         getAllComics(offset)
-            .then(onComicsLoaded);
+            .then(onComicsLoaded)
+            .then(() => setProcess('confirmed'));
     }
 
     const renderComics = (arr) => {
@@ -67,15 +88,12 @@ const ComicsList = () => {
         )
     };
 
-    const items = renderComics(listComics);
-    const errorMessage = error ? <ErrorMessage/> : null;
-    const spinner = loading && !newItemsLoading ? <Spinner/> : null;
 
     return (
         <div className="comics__list">
-            {errorMessage}
-            {spinner}
-            {items}
+            {
+                setContent(process, () => renderComics(listComics), newItemsLoading)
+            }
             <button className="button button__main button__long"
                     disabled={newItemsLoading}
                     style={{'display': comicsEnded ? 'none' : 'block'}}

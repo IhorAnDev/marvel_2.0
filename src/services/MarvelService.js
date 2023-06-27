@@ -1,11 +1,11 @@
 import useHttp from "../hooks/http.hook";
 
 const useMarvelService = () => {
-    const {loading, request, error, clearError} = useHttp();
+    const {loading, request, error, clearError, process, setProcess} = useHttp();
     // IhorAnDev
-    // _API_KEY = 'apikey=362d708dfd6a43d3cd437026201c4770';
+    const _API_KEY = 'apikey=362d708dfd6a43d3cd437026201c4770';
     //Ivan
-    const _API_KEY = 'apikey=c5d6fc8b83116d92ed468ce36bac6c62';
+    // const _API_KEY = 'apikey=c5d6fc8b83116d92ed468ce36bac6c62';
 
     //DevelopPaPA
     // _API_KEY = 'apikey=28582228fcafe30c8acf2c7eb6b3ac77';
@@ -77,7 +77,18 @@ const useMarvelService = () => {
         }
     }
 
-    return {loading, error, getCharactersById, getAllCharacters, clearError, getAllComics, getComicById, getCharacterByName};
+    return {
+        loading,
+        error,
+        getCharactersById,
+        getAllCharacters,
+        clearError,
+        getAllComics,
+        getComicById,
+        getCharacterByName,
+        setProcess,
+        process
+    };
 }
 
 export default useMarvelService;

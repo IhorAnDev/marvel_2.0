@@ -5,6 +5,7 @@ import {lazy, Suspense} from "react";
 import CharSearchForm from "../charSearchForm/CharSearchForm";
 import SinglePage from "../pages/SinglePage";
 
+
 const Page404 = lazy(() => import('../pages/404'));
 const MainPage = lazy(() => import('../pages/MainPage'));
 const ComicsPage = lazy(() => import('../pages/ComicsPage'));
